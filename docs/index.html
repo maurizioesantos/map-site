@@ -3,52 +3,55 @@
 <head>
   <meta charset="UTF-8"/>
   <title>Live Geotab Map</title>
-  <!-- 1) Load the Geotab SDK directly from GitHub via jsDelivr -->
+  <!-- 1) Load the Geotab JS API & Map SDK from jsDelivr -->
   <script src="https://cdn.jsdelivr.net/gh/Geotab/sdk@master/dist/geotab-api.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/Geotab/sdk@master/dist/geotab-map.min.js"></script>
   <style>
-    /* Full-screen map */
-    html, body { margin:0; padding:0; height:100%; }
-    #map     { width:100%; height:100%; }
+    /* Make the map fill the entire screen */
+    html, body { margin: 0; padding: 0; height: 100%; }
+    #map { width: 100%; height: 100%; }
   </style>
 </head>
 <body>
+  <!-- 2) Map container -->
   <div id="map"></div>
+
   <script>
+    // 3) Wait until the page is ready
     document.addEventListener("DOMContentLoaded", () => {
-      // 2) Your Geotab credentials + server info
-      const server      = "https://my.geotab.com";
-      const database    = "septixwaste";
+      // 4) Your Geotab credentials and server/database
+      const server   = "https://my.geotab.com";
+      const database = "septixwaste";
       const credentials = {
         userName: "mauriziosantos@septixpr.com",
         password: "Q6uohDcE2DEPHZ3BG8tp"
       };
 
-      // 3) Initialize the API client
+      // 5) Initialize the API client
       const api = new GeotabApi({
-        url:         server,
-        database:    database,
+        url:        server,
+        database:   database,
         credentials: credentials,
-        useHttps:    true
+        useHttps:   true
       });
 
-      // 4) Authenticate, then build and display the map
+      // 6) Authenticate, then build the map
       api.authenticate(error => {
         if (error) {
-          console.error("Login failed:", error);
+          console.error("Geotab login failed:", error);
           return;
         }
-        const map = new Geotab.Map.Map(
-          document.getElementById("map"),
-          {
-            api: api,
-            options: {
-              zoom:   10,
-              center: { lat: 18.2208, lng: -66.5901 }
-            }
+
+        // 7) Create a full-screen map centered on Puerto Rico
+        const map = new Geotab.Map.Map(document.getElementById("map"), {
+          api: api,
+          options: {
+            center: { lat: 18.2208, lng: -66.5901 },
+            zoom: 10
           }
-        );
-        // 5) Add vehicles layer, auto-refresh every 60s
+        });
+
+        // 8) Add your vehicles as a live layer, auto-refresh every minute
         map.addDeviceLayer({
           autoRefresh:     true,
           refreshInterval: 60
