@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Live Geotab Map</title>
-  <!-- Geotab SDK via jsDelivr CDN -->
-  <script src="https://cdn.jsdelivr.net/gh/Geotab/sdk/dist/geotab-api.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/Geotab/sdk/dist/geotab-map.min.js"></script>
+  <!-- Load the Geotab SDK from UNPKG -->
+  <script src="https://unpkg.com/@geotab/sdk@latest/dist/geotab-api.min.js"></script>
+  <script src="https://unpkg.com/@geotab/sdk@latest/dist/geotab-map.min.js"></script>
   <style>
-    /* make the map fill the viewport */
+    /* Make the map fill the screen */
     html, body { margin: 0; padding: 0; height: 100%; }
     #map { width: 100%; height: 100%; }
   </style>
@@ -15,42 +15,42 @@
 <body>
   <div id="map"></div>
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      // ❗ fill in your server, database & credentials
-      const server   = "https://my.geotab.com";
-      const database = "septixwaste";
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1) Geotab server & database info
+      const server    = 'https://my.geotab.com';
+      const database  = 'septixwaste';
       const credentials = {
-        userName: "mauriziosantos@septixpr.com",
-        password: "Q6uohDcE2DEPHZ3BG8tp"
+        userName: 'mauriziosantos@septixpr.com',
+        password: 'Q6uohDcE2DEPHZ3BG8tp'
       };
 
-      // initialize the Geotab API
+      // 2) Initialize the Geotab API
       const api = new GeotabApi({
-        url:      server,
-        database: database,
+        url:       server,
+        database:  database,
         credentials: credentials,
-        useHttps: true
+        useHttps:  true
       });
 
+      // 3) Authenticate, then build the map
       api.authenticate(error => {
         if (error) {
-          console.error("Geotab login failed:", error);
+          console.error('Geotab login failed:', error);
           return;
         }
-        // build the map
-        const map = new Geotab.Map.Map(
-          document.getElementById("map"),
-          {
-            api: api,
-            options: {
-              zoom: 10,                              // adjust as needed
-              center: { lat: 18.2208, lng: -66.5901 } // center on Puerto Rico
-            }
+
+        // Create the map in the #map div
+        const map = new Geotab.Map.Map(document.getElementById('map'), {
+          api: api,
+          options: {
+            zoom:   10,                          // adjust as needed
+            center: { lat: 18.2208, lng: -66.5901 } // center on Puerto Rico
           }
-        );
-        // add your vehicles, auto‐refresh every minute
+        });
+
+        // 4) Add your vehicles layer, auto-refresh every minute
         map.addDeviceLayer({
-          autoRefresh: true,
+          autoRefresh:     true,
           refreshInterval: 60
         });
       });
