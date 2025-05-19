@@ -3,27 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <title>Live Geotab Map</title>
-  <!-- Load the Geotab API & Map SDK from the official UNPKG CDN -->
+  <!-- Load Geotab SDK from unpkg -->
   <script src="https://unpkg.com/@geotab/sdk@latest/dist/geotab-api.min.js"></script>
   <script src="https://unpkg.com/@geotab/sdk@latest/dist/geotab-map.min.js"></script>
   <style>
-    /* Make the map fill the entire screen */
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-    }
-    #map {
-      width: 100%;
-      height: 100%;
-    }
+    /* Full-screen map */
+    html, body { margin: 0; padding: 0; height: 100%; }
+    #map { width: 100%; height: 100%; }
   </style>
 </head>
 <body>
   <div id="map"></div>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // 1) Your Geotab server, database, and credentials
       const server      = "https://my.geotab.com";
       const database    = "septixwaste";
       const credentials = {
@@ -31,7 +23,7 @@
         password: "Q6uohDcE2DEPHZ3BG8tp"
       };
 
-      // 2) Initialize the Geotab API client
+      // 1️⃣ Initialize the client
       const api = new GeotabApi({
         url:         server,
         database:    database,
@@ -39,30 +31,24 @@
         useHttps:    true
       });
 
-      // 3) Authenticate, then build the map
+      // 2️⃣ Authenticate & create map
       api.authenticate(error => {
         if (error) {
-          console.error("Geotab login failed:", error);
+          console.error("Login failed:", error);
           return;
         }
-
-        // Create the map in our #map div
         const map = new Geotab.Map.Map(
           document.getElementById("map"),
           {
             api: api,
             options: {
-              zoom:   10,                          // starting zoom
-              center: { lat: 18.2208, lng: -66.5901 } // center on Puerto Rico
+              zoom:   10,
+              center: { lat: 18.2208, lng: -66.5901 }
             }
           }
         );
-
-        // 4) Add your vehicles layer, with auto-refresh every 60 seconds
-        map.addDeviceLayer({
-          autoRefresh:     true,
-          refreshInterval: 60
-        });
+        // 3️⃣ Add live-refreshing device layer
+        map.addDeviceLayer({ autoRefresh: true, refreshInterval: 60 });
       });
     });
   </script>
